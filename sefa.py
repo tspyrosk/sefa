@@ -79,11 +79,13 @@ def main():
     codes = torch.randn(args.num_samples, generator.z_space_dim).cuda()
     if gan_type == 'pggan':
         codes = generator.layer0.pixel_norm(codes)
-    elif gan_type in ['stylegan', 'stylegan2', 'stylegan3']:
+    elif gan_type in ['stylegan', 'stylegan2']:
         codes = generator.mapping(codes)['w']
         codes = generator.truncation(codes,
                                      trunc_psi=args.trunc_psi,
                                      trunc_layers=args.trunc_layers)
+    elif gan_type == 'stylegan3':
+        codes = generator.mapping(codes, torch.empty(0, 3), truncation_psi=args.trunc_psi) 
     codes = codes.detach().cpu().numpy()
 
     # Generate visualization pages.
@@ -129,6 +131,9 @@ def main():
                 elif gan_type in ['stylegan', 'stylegan2']:
                     temp_code[:, layers, :] += boundary * d
                     image = generator.synthesis(to_tensor(temp_code))['image']
+                elif gan_type == 'stylegan3':
+                    temp_code[:, layers, :] += boundary * d
+                    image = generator.synthesis(to_tensor(temp_code))
                 image = postprocess(image)[0]
                 vizer_1.set_cell(sem_id * (num_sam + 1) + sam_id + 1, col_id,
                                  image=image)
