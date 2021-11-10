@@ -190,7 +190,7 @@ def factorize_weight(generator, layer_idx='all'):
         if gan_type == 'stylegan2' and idx == generator.num_layers - 1:
             layer_name = f'output{idx // 2}'
         if gan_type == 'stylegan3':
-            generator.synthesis.layer_names[idx]
+            layer_name = generator.synthesis.layer_names[idx]
         
         if gan_type == 'pggan':
             weight = generator.__getattr__(layer_name).weight
