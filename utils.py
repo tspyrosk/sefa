@@ -79,6 +79,7 @@ def load_generator(model_name):
     checkpoint_path = os.path.join(CHECKPOINT_DIR, model_name + '.pth')
     local_path = os.path.join(url, model_name + '.pth')
     print(f'Loading checkpoint from `{checkpoint_path}` ...')
+    print(f'Local Path: `{local_path}`')
     if not os.path.exists(checkpoint_path):
         if os.path.exists(local_path):
            print(f' Fetching checkpoint from local path `{local_path}` ...')
