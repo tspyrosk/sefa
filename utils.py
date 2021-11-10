@@ -77,11 +77,12 @@ def load_generator(model_name):
     # Load pre-trained weights.
     os.makedirs(CHECKPOINT_DIR, exist_ok=True)
     checkpoint_path = os.path.join(CHECKPOINT_DIR, model_name + '.pth')
+    local_path = os.path.join(url, model_name + '.pth')
     print(f'Loading checkpoint from `{checkpoint_path}` ...')
     if not os.path.exists(checkpoint_path):
-        if os.path.exists(url):
-           print(f' Fetching checkpoint from local path `{url}` ...')
-           subprocess.call(['cp', url + "/*", checkpoint_path])
+        if os.path.exists(local_path):
+           print(f' Fetching checkpoint from local path `{local_path}` ...')
+           subprocess.call(['cp', local_path, CHECKPOINT_DIR])
            print(f'  Finish copying to checkpoint.')
         else:
            print(f'  Downloading checkpoint from `{url}` ...')
