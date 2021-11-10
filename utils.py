@@ -183,12 +183,12 @@ def factorize_weight(generator, layer_idx='all'):
     weights = []
     for idx in layers:
         layer_name = f'layer{idx}'
-        if gan_type == 'stylegan2' and idx == generator.num_layers - 1:
+        if (gan_type == 'stylegan2' or gan_type == 'stylegan3') and idx == generator.num_layers - 1:
             layer_name = f'output{idx // 2}'
         if gan_type == 'pggan':
             weight = generator.__getattr__(layer_name).weight
             weight = weight.flip(2, 3).permute(1, 0, 2, 3).flatten(1)
-        elif gan_type in ['stylegan', 'stylegan2']:
+        elif gan_type in ['stylegan', 'stylegan2', 'stylegan3']:
             weight = generator.synthesis.__getattr__(layer_name).style.weight.T
         weights.append(weight.cpu().detach().numpy())
     weight = np.concatenate(weights, axis=1).astype(np.float32)
