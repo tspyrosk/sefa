@@ -79,7 +79,7 @@ def main():
     codes = torch.randn(args.num_samples, generator.z_space_dim).cuda()
     if gan_type == 'pggan':
         codes = generator.layer0.pixel_norm(codes)
-    elif gan_type in ['stylegan', 'stylegan2']:
+    elif gan_type in ['stylegan', 'stylegan2', 'stylegan3']:
         codes = generator.mapping(codes)['w']
         codes = generator.truncation(codes,
                                      trunc_psi=args.trunc_psi,
