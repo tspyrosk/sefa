@@ -8,14 +8,16 @@ from .stylegan_generator import StyleGANGenerator
 from .stylegan_discriminator import StyleGANDiscriminator
 from .stylegan2_generator import StyleGAN2Generator
 from .stylegan2_discriminator import StyleGAN2Discriminator
+from .networks_stylegan3 import Generator as StyleGAN3Generator
+from .networks_stylegan3 import Discriminator as StyleGAN3Discriminator
 
 __all__ = [
     'MODEL_ZOO', 'PGGANGenerator', 'PGGANDiscriminator', 'StyleGANGenerator',
-    'StyleGANDiscriminator', 'StyleGAN2Generator', 'StyleGAN2Discriminator',
+    'StyleGANDiscriminator', 'StyleGAN2Generator', 'StyleGAN2Discriminator', 'StyleGAN3Generator', 'StyleGAN3Discriminator',
     'build_generator', 'build_discriminator', 'build_model'
 ]
 
-_GAN_TYPES_ALLOWED = ['pggan', 'stylegan', 'stylegan2']
+_GAN_TYPES_ALLOWED = ['pggan', 'stylegan', 'stylegan2', 'stylegan3']
 _MODULES_ALLOWED = ['generator', 'discriminator']
 
 
@@ -41,6 +43,8 @@ def build_generator(gan_type, resolution, **kwargs):
         return StyleGANGenerator(resolution, **kwargs)
     if gan_type == 'stylegan2':
         return StyleGAN2Generator(resolution, **kwargs)
+    if gan_type == 'stylegan3':
+        return StyleGAN3Generator(z_dim = 512, c_dim = 0, w_dim = 512, img_resolution = 256, img_channels = 3, mapping_kwargs = {}, channel_base = 16384, num_layers=14, num_critical=2, margin_size=10, num_fp16_res=4)
     raise NotImplementedError(f'Unsupported GAN type `{gan_type}`!')
 
 
@@ -66,6 +70,8 @@ def build_discriminator(gan_type, resolution, **kwargs):
         return StyleGANDiscriminator(resolution, **kwargs)
     if gan_type == 'stylegan2':
         return StyleGAN2Discriminator(resolution, **kwargs)
+    if gan_type == 'stylegan3':
+        return StyleGAN3Discriminator(c_dim=0, img_resolution=256, img_channels=3)
     raise NotImplementedError(f'Unsupported GAN type `{gan_type}`!')
 
 
@@ -111,4 +117,6 @@ def parse_gan_type(module):
         return 'stylegan'
     if isinstance(module, (StyleGAN2Generator, StyleGAN2Discriminator)):
         return 'stylegan2'
+    if isinstance(module, (StyleGAN3Generator, StyleGAN3Discriminator)):
+        return 'stylegan3'
     raise ValueError(f'Unable to parse GAN type from type `{type(module)}`!')
