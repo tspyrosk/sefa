@@ -79,9 +79,14 @@ def load_generator(model_name):
     checkpoint_path = os.path.join(CHECKPOINT_DIR, model_name + '.pth')
     print(f'Loading checkpoint from `{checkpoint_path}` ...')
     if not os.path.exists(checkpoint_path):
-        print(f'  Downloading checkpoint from `{url}` ...')
-        subprocess.call(['wget', '--quiet', '-O', checkpoint_path, url])
-        print(f'  Finish downloading checkpoint.')
+        if os.path.exists(url):
+           print(f' Fetching checkpoint from local path `{url}` ...')
+           subprocess.call(['cp', url + "/*", checkpoint_path])
+           print(f'  Finish copying to checkpoint.')
+        else:
+           print(f'  Downloading checkpoint from `{url}` ...')
+           subprocess.call(['wget', '--quiet', '-O', checkpoint_path, url])
+           print(f'  Finish downloading checkpoint.')
     checkpoint = torch.load(checkpoint_path, map_location='cpu')
     if 'generator_smooth' in checkpoint:
         generator.load_state_dict(checkpoint['generator_smooth'])
@@ -166,7 +171,7 @@ def factorize_weight(generator, layer_idx='all'):
     # Get layers.
     if gan_type == 'pggan':
         layers = [0]
-    elif gan_type in ['stylegan', 'stylegan2']:
+    elif gan_type in ['stylegan', 'stylegan2', 'stylegan3']:
         if layer_idx == 'all':
             layers = list(range(generator.num_layers))
         else:
