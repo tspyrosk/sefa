@@ -80,15 +80,17 @@ def load_generator(model_name):
     local_path = os.path.join(url, model_name + '.pth')
     print(f'Loading checkpoint from `{checkpoint_path}` ...')
     print(f'Local Path: `{local_path}`')
+    
+    if os.path.exists(local_path):
+        print(f' Fetching checkpoint from local path `{local_path}` ...')
+        subprocess.call(['cp', local_path, CHECKPOINT_DIR])
+        print(f'  Finish copying to checkpoint.')
+    
     if not os.path.exists(checkpoint_path):
-        if os.path.exists(local_path):
-           print(f' Fetching checkpoint from local path `{local_path}` ...')
-           subprocess.call(['cp', local_path, CHECKPOINT_DIR])
-           print(f'  Finish copying to checkpoint.')
-        else:
-           print(f'  Downloading checkpoint from `{url}` ...')
-           subprocess.call(['wget', '--quiet', '-O', checkpoint_path, url])
-           print(f'  Finish downloading checkpoint.')
+        print(f'  Downloading checkpoint from `{url}` ...')
+        subprocess.call(['wget', '--quiet', '-O', checkpoint_path, url])
+        print(f'  Finish downloading checkpoint.')
+
     checkpoint = torch.load(checkpoint_path, map_location='cpu')
     if 'generator_smooth' in checkpoint:
         generator.load_state_dict(checkpoint['generator_smooth'])
