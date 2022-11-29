@@ -303,6 +303,16 @@ MODEL_ZOO = {
         resolution=256,
         url='./stylegan_pth_model',
     ),
+    'stylegan3_shavershellgood256': dict(
+        gan_type='stylegan3',
+        resolution=256,
+        url='./stylegan_pth_model',
+    ),
+    'stylegan3_shavershellinterrupted256': dict(
+        gan_type='stylegan3',
+        resolution=256,
+        url='./stylegan_pth_model',
+    )
 }
 
 # pylint: enable=line-too-long
